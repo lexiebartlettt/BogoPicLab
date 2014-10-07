@@ -87,19 +87,20 @@ public class BogoPicGenActivity extends Activity {
 	}
 
 	private Bitmap ourBMP;
-
+	public String text;
 	private void setBogoPic() {
 		// TODO: Show a toast with message "Generating Photo"
-		
+		Toast.makeText(this,"generating Photo", Toast.LENGTH_LONG).show();
 		
 		// TODO: Get a reference to the image button
-		
+		ImageButton button = (ImageButton) findViewById(R.id.TakeAPhoto);
 		
 		// Generate a bogopic
-		ourBMP = BogoPicGen.generateBitmap(400, 400);
+		ourBMP = BogoPicGen.generateBitmap(400,400);
+		text="Bla Bla Bla";
 		
 		// TODO: Assign the bogopic to the button with setImageBitmap
-		
+		button.setImageBitmap(ourBMP);
 	}
 
 	// Call this to accept
@@ -112,18 +113,29 @@ public class BogoPicGenActivity extends Activity {
 		try {	
 			if (intent.getExtras() != null) {
 				// TODO: If cancelled, show a toast, set result to RESULT_CANCELED, finish and return 
-				
+				if(cancel){
+					Toast.makeText(this, "Photo Canceled!", Toast.LENGTH_LONG);
+					setResult(RESULT_CANCELED);
+					finish();
+					return;
+				}
 				
 				// If accepted save the picture
 				File intentPicture = getPicturePath(intent);
 				saveBMP(intentPicture, ourBMP);
-				
+				//intent.putExtras().get(text, text.toString());
+				//text= (String) intent.getExtras().get(text);
 				// TODO: set result to RESULT_OK
+				intent = new Intent();
+				intent.putExtra(Intent.EXTRA_TEXT,text);
+				setResult(RESULT_OK,intent);
 				
 			} else {
 				Toast.makeText(this, "Photo Cancelled: No Reciever?",
 						Toast.LENGTH_LONG).show();
-				setResult(RESULT_CANCELED);
+				//Intent newIntent= new Intent();
+				intent.putExtra("key",text);
+				setResult(RESULT_CANCELED,intent);
 			}
 		} catch (FileNotFoundException e) {
 			Toast.makeText(this, "Couldn't Find File to Write to?",
